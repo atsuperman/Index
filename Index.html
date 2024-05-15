@@ -1,604 +1,146 @@
-
-
 <!DOCTYPE html>
-
-
 <html lang="en">
-
-
-  <head>
-
-
-    <meta charset="UTF-8" />
-
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-
-    <title>SUPER RADIO</title>
-
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUPER TV</title>
+    <!-- Fixed page title -->
     <style>
-
-
-      .audio-player {
-
-
-        width: 300px;
-
-
-        margin: 50px auto;
-
-
-        text-align: center;
-
-
-        background-color: #f0f0f0;
-
-
-        padding: 20px;
-
-
-        border-radius: 10px;
-
-
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-
-      }
-
-
-
-      #trackName {
-
-
-        margin-top: 20px;
-
-
-        padding-top: 20px;
-
-
-        padding-bottom: 20px;
-
-
-        font-size: 18px;
-
-
-        color: #666;
-
-
-        white-space: nowrap;
-
-
-        overflow: hidden;
-
-
-        text-overflow: ellipsis;
-
-
-      }
-
-
-
-      body {
-
-
-        background-color: #002147;
-
-
-      }
-
-
-
-      .play-pause-btn {
-
-
-        background-color: #3498db;
-
-
-        border: none;
-
-
-        border-radius: 50%;
-
-
-        width: 60px;
-
-
-        height: 60px;
-
-
-        font-size: 24px;
-
-
-        color: #fff;
-
-
-        cursor: pointer;
-
-
-        transition: background-color 0.3s ease;
-
-
-      }
-
-
-
-      .play-pause-btn:hover {
-
-
-        background-color: #2980b9;
-
-
-      }
-
-
-
-      .play-pause-btn {
-
-
-        font-size: 0; /* Hide the text content */
-
-
-      }
-
-
-      .controls {
-
-
-        display: flex;
-
-
-        justify-content: space-between;
-
-
-        align-items: center;
-
-
-        padding: 0 20px; /* Adjust padding as needed */
-
-
-      }
-
-
-
-      .watermark-container {
-
-
-        position: relative;
-
-
-      }
-
-
-
-      .watermark {
-
-
-        font-size: 12px;
-
-
-        color: rgba(0, 0, 0, 0.3); /* Adjust opacity as needed */
-
-
-
-        position: absolute;
-
-
-        top: 0;
-
-
-        right: 0;
-
-
-      }
-
-
-
-      .watermark {
-
-
-        /* Adjust position, size, and any other styles as needed */
-
-
-        position: absolute;
-
-
-        top: calc(50% - 200px); /* Adjust the vertical position */
-
-
-        right: -20px; /* Adjust the horizontal position */
-
-
-        width: 100px; /* Adjust the width of the image */
-
-
-        height: 100px; /* Adjust the height of the image */
-
-
-      }
-
-
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+        }
+        .video-container {
+            position: relative;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: opacity 1s ease-in-out;
+        }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between; /* Align buttons to the right */
+            align-items: center;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 200px; /* Adjust the width as needed */
+        }
+        .controls button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            width: 40px; /* Set width to match play button */
+            height: 40px; /* Set height to match play button */
+            transition: color 0.3s ease;
+        }
+        .controls button:hover {
+            color: #ffa500;
+        }
+        .logo {
+            position: absolute;
+            top: 0;
+            right: 5px;
+            max-height: 80px; /* Adjust max-height as needed */
+        }
+        /* Adjust logo size for smaller screens */
+        @media (max-width: 600px) {
+            .logo {
+                max-height: 60px; /* Adjust smaller logo size for smaller screens */
+            }
+        }
+        .radio-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .center-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
-
-
-  </head>
-
-
-  <body>
-
-
-    <div class="audio-player">
-
-
-      <h2 id="trackName">Track Name</h2>
-
-
-      <div class="top-pad">
-
-
-        <audio id="player" preload="none"></audio>
-
-
-        <button class="play-pause-btn" id="playPauseBtn">
-
-
-          <img
-
-
-            src="https://cdn.glitch.global/fdbaff0e-6af5-4a23-87cc-fb59b12fec81/play-1001-svgrepo-com.png?v=1714803587430"
-
-
-            class="png-icon play-icon"
-
-
-            alt="Play Icon"
-
-
-            style="width: 55px; height: 55px"
-
-
-          />
-
-
-          <img
-
-
-            src="https://cdn.glitch.global/fdbaff0e-6af5-4a23-87cc-fb59b12fec81/pause-1010-svgrepo-com.png?v=1714803596431"
-
-
-            class="png-icon pause-icon"
-
-
-            alt="Pause Icon"
-
-
-            style="width: 55px; height: 55px; display: none"
-
-
-          />
-
-
-        </button>
-
-
-      </div>
-
-
-      <div class="controls">
-
-
-        <button class="play-pause-btn" id="facebookBtn">
-
-
-          <img
-
-
-            src="https://cdn.glitch.global/fdbaff0e-6af5-4a23-87cc-fb59b12fec81/facebook.png?v=1714798295203"
-
-
-            class="png-icon"
-
-
-            alt="Facebook Icon"
-
-
-            style="width: 55px; height: 55px"
-
-
-          />
-
-
-        </button>
-
-
-        <button class="play-pause-btn" id="tvBtn">
-
-
-          <img
-
-
-            src="https://cdn.glitch.global/fdbaff0e-6af5-4a23-87cc-fb59b12fec81/tv%20super%20.png?v=1714753298912"
-
-
-            class="png-icon"
-
-
-            alt="TV Icon"
-
-
-            style="width: 55px; height: 55px"
-
-
-          />
-
-
-        </button>
-
-
-        <button class="play-pause-btn" id="reloadBtn">
-
-
-          <img
-
-
-            src="https://cdn.glitch.global/fdbaff0e-6af5-4a23-87cc-fb59b12fec81/butterfly.png?v=1714863116873"
-
-
-            class="png-icon"
-
-
-            alt="Reload Icon"
-
-
-            style="width: 55px; height: 55px"
-
-
-          />
-
-
-        </button>
-
-
-        <div class="watermark-container">
-
-
-          <img
-
-
-            src="https://cdn.glitch.global/fdbaff0e-6af5-4a23-87cc-fb59b12fec81/Radio%20SUPER.png?v=1714815197307"
-
-
-            class="watermark"
-
-
-            alt="Watermark Image"
-
-
-          />
-
-
+</head>
+<body>
+    <div class="video-container" id="videoContainer">
+        <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444" alt="Logo" class="logo">
+        <video id="videoPlayer" autoplay>Your browser does not support the video tag.</video>
+        <div class="overlay">
+            <div class="controls">
+                <button id="playPauseBtn">&#9658;</button>
+                <button id="fullScreenBtn">
+                    <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/zoom-fit-svgrepo-com.svg?v=1714291385987" alt="Full Screen" width="30" height="30">
+                </button>
+                <!-- Reload button -->
+                <button id="reloadBtn" style="background: none; border: none; cursor: pointer; font-size: 20px; width: 40px; height: 40px;">
+                    <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/ReloadW.svg?v=1714271107351" alt="Reload" width="30" height="30">
+                </button>
+                <!-- Facebook button -->
+                <button onclick="openFacebook()" style="background: none; border: none; cursor: pointer;">
+                    <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/fb.svg?v=1714293315523" alt="Facebook" width="30" height="30">
+                </button>
+            </div>
+            <!-- Radio button -->
+            <button class="radio-button" onclick="smoothOpenWebsite()">
+                <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818" alt="Radio" width="30" height="30">
+            </button>
         </div>
-
-
-      </div>
-
-
     </div>
 
-
-    <script src="a.js"></script>
-
-
-
     <script>
-
-
-      const player = document.getElementById("player");
-
-
-      const trackName = document.getElementById("trackName");
-
-
-      const playPauseBtn = document.getElementById("playPauseBtn");
-
-
-      const facebookBtn = document.getElementById("facebookBtn");
-
-
-      const tvBtn = document.getElementById("tvBtn");
-
-
-
-      let currentTrackIndex = 0;
-
-
-      let isPlaying = false;
-
-
-      let playedIndexes = []; // Array to keep track of played indexes
-
-
-
-      // Hide default controls
-
-
-      player.controls = false;
-
-
-      // Load and play the first track
-loadTrack(0); // Start with the first track
-
-function loadTrack(index) {
-    player.src = trackUrls[index];
-
-
-    // Extract file name from URL
-
-    const fileName = trackUrls[index]
-
-      .split("/")
-
-      .pop()
-
-      .replace(/%20/g, " ")
-
-      .replace(/\?.*$/, "")
-
-      .replace(/\.[^.]+$/, ""); // Remove file extension
-
-
-    // Update the track name displayed in both the player and the page title
-
-    trackName.textContent = fileName;
-
-    document.title = fileName; // Update the page title
-
-
-    if (isPlaying) {
-
-      player.play();
-
-    }
-
-  }
-
-
-
-      // Automatically load and play the next track when the current one ends
-
-
-      player.addEventListener("ended", function () {
-
-
-        playedIndexes.push(currentTrackIndex); // Add the played index to the playedIndexes array
-
-
-        if (playedIndexes.length === trackUrls.length) {
-
-
-          // If all tracks have been played
-
-
-          playedIndexes = []; // Reset the playedIndexes array
-
-
-          shuffleArray(trackUrls); // Shuffle the track URLs array
-
-
-        } else {
-
-
-          do {
-
-
-            currentTrackIndex = Math.floor(Math.random() * trackUrls.length); // Generate a random index
-
-
-          } while (playedIndexes.includes(currentTrackIndex)); // Repeat until a non-played index is found
-
-
+        // Array of video URLs in the playlist
+        var playlist = [
+            "https://example.com/video1.mp4",
+            "https://example.com/video2.mp4",
+            "https://example.com/video3.mp4"
+        ];
+
+        // Get the video player element
+        var videoPlayer = document.getElementById("videoPlayer");
+
+        // Index to keep track of the current video being played
+        var currentVideoIndex = 0;
+
+        // Function to play the next video in the playlist
+        function playNextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % playlist.length;
+            videoPlayer.src = playlist[currentVideoIndex];
+            videoPlayer.play();
         }
 
+        // Play the first video when the page loads
+        videoPlayer.src = playlist[currentVideoIndex];
+        videoPlayer.play();
 
-        loadTrack(currentTrackIndex);
-
-
-      });
-
-
-
-      // Play/pause button functionality
-
-
-      playPauseBtn.addEventListener("click", function () {
-
-
-        if (!isPlaying) {
-
-
-          player.play();
-
-
-          document.querySelector(".play-icon").style.display = "none";
-
-
-          document.querySelector(".pause-icon").style.display = "inline";
-
-
-        } else {
-
-
-          player.pause();
-
-
-          document.querySelector(".play-icon").style.display = "inline";
-
-
-          document.querySelector(".pause-icon").style.display = "none";
-
-
-        }
-
-
-        isPlaying = !isPlaying;
-
-
-      });
-
-
-
-      // Facebook button functionality
-
-
-      facebookBtn.addEventListener("click", function () {
-
-
-        window.open("https://www.fb.com/atSUPERMAN", "_blank"); // Open link in a new tab/window
-
-
-      });
-
-
-
-      // TV button functionality
-
-
-      tvBtn.addEventListener("click", function () {
-
-
-        window.open("https://dolomite-quartz-raisin.glitch.me/", "_blank");
-
-
-      });
-
-
-
-      // Reload button functionality
-
-
-      const reloadBtn = document.getElementById("reloadBtn");
-
-
-      reloadBtn.addEventListener("click", function () {
-
-
-        window.open("https://brazen-achieved-seeder.glitch.me/", "_blank");
-
-
-      });
-
-
+        // Event listener to play the next video when the current one ends
+        videoPlayer.addEventListener("ended", playNextVideo);
     </script>
-
-
-  </body>
-
-
-</html>
-
-
-
-
-
-  
+</body>
+  </html>
