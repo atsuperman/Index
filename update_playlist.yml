@@ -1,0 +1,19 @@
+name: Update Playlist
+
+on:
+  push:
+    paths:
+      - 'videos/*.mp4'
+
+jobs:
+  update_playlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update playlist file
+        run: |
+          # Create a list of video URLs from the videos directory
+          cd videos
+          find . -type f -name "*.mp4" -exec echo '"https://example.com/{}"' \; > playlist.json
