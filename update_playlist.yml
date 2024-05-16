@@ -17,3 +17,7 @@ jobs:
           # Create a list of video URLs from the videos directory
           cd videos
           find . -type f -name "*.mp4" -exec echo '"https://example.com/{}"' \; > playlist.json
+          cd ..
+          git add videos/playlist.json
+          git commit -m "Update playlist.json"
+          git push
