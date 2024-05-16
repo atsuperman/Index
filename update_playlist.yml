@@ -3,7 +3,8 @@ name: Update Playlist
 on:
   push:
     paths:
-      - 'videos/*.mp4'
+      - 'playlist.json' # Assuming the playlist file is in the root directory
+      - 'update_playlist.yml' # Adjust paths if necessary
 
 jobs:
   update_playlist:
@@ -14,10 +15,9 @@ jobs:
 
       - name: Update playlist file
         run: |
-          # Create a list of video URLs from the videos directory
-          cd videos
-          find . -type f -name "*.mp4" -exec echo '"https://example.com/{}"' \; > playlist.json
-          cd ..
-          git add videos/playlist.json
-          git commit -m "Update playlist.json"
-          git push
+          echo '[' > playlist_temp.json # Create temporary file
+          echo "  \"https://cdn.glitch.me/1780eae4-2681-418a-b256-59d3398b90a7/lityanandha.mov?v=1714986982660\"," >> playlist_temp.json # Replace with your CDN URLs
+          echo "  \"https://cdn.glitch.me/1780eae4-2681-418a-b256-59d3398b90a7/lityanandha.mov?v=1714986982660\"" >> playlist_temp.json
+          echo ']' >> playlist_temp.json
+          mv playlist_temp.json playlist.json # Replace the original playlist file with the updated one
+          
