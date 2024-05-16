@@ -329,38 +329,61 @@
         // Load the first video when page loads
         loadVideo(0);
 
-        // Event listener for play/pause button
-        document.getElementById("playPauseBtn").addEventListener("click", function() {
-            if (videoPlayer.paused) {
-                videoPlayer.play();
-            } else {
-                videoPlayer.pause();
-            }
+        // Function to refresh the page smoothly
+
+      document
+
+        .getElementById("reloadBtn")
+
+        .addEventListener("click", function () {
+
+          smoothReloadPage();
+
         });
 
-        // Event listener for full screen button
-        document.getElementById("fullScreenBtn").addEventListener("click", function() {
-            if (videoPlayer.requestFullscreen) {
-                videoPlayer.requestFullscreen();
-            } else if (videoPlayer.mozRequestFullScreen) {
-                videoPlayer.mozRequestFullScreen(); // Firefox
-            } else if (videoPlayer.webkitRequestFullscreen) {
-                videoPlayer.webkitRequestFullscreen(); // Chrome, Safari and Opera
-            }
-        });
 
-        // Event listener for reload button
-        document.getElementById("reloadBtn").addEventListener("click", function() {
-            videoPlayer.load();
-        });
+      function smoothReloadPage() {
 
-        // Event listener for share button
-        document.getElementById("shareBtn").addEventListener("click", function() {
-            // Implement sharing functionality here
-            alert("Share functionality will be implemented here.");
-        });
+        document.body.style.transition = "opacity 0.5s";
+
+        document.body.style.opacity = "0";
+
+        setTimeout(function () {
+
+          location.reload();
+
+        }, 500);
+
+      }
+
+
+      // Function to open Facebook link
+
+      function openFacebook() {
+
+        window.open("https://www.fb.com/atSUPERMAN");
+
+      }
+
+
+      // Function to smoothly open the provided website
+
+      function smoothOpenWebsite() {
+
+        document.body.style.transition = "opacity 0.5s";
+
+        document.body.style.opacity = "0";
+
+        setTimeout(function () {
+
+          window.location.href = "https://past-rainbow-mule.glitch.me/";
+
+        }, 500);
+
+      }
+
     </script>
 </body>
 </html>
 
-                
+        
