@@ -6,7 +6,86 @@
     <title>SUPER TV</title>
     <!-- Fixed page title -->
     <style>
-        /* your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+        }
+        .video-container {
+            position: relative;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: opacity 1s ease-in-out;
+        }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between; /* Align buttons to the right */
+            align-items: center;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 200px; /* Adjust the width as needed */
+        }
+        .controls button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            width: 40px; /* Set width to match play button */
+            height: 40px; /* Set height to match play button */
+            transition: color 0.3s ease;
+        }
+        .controls button:hover {
+            color: #ffa500;
+        }
+        .logo {
+            position: absolute;
+            top: 0;
+            right: 5px;
+            max-height: 80px; /* Adjust max-height as needed */
+        }
+        /* Adjust logo size for smaller screens */
+        @media (max-width: 600px) {
+            .logo {
+                max-height: 60px; /* Adjust smaller logo size for smaller screens */
+            }
+        }
+        .radio-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .center-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
