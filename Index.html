@@ -115,22 +115,37 @@
     </div>
 
     <script>
-        // Get the video player element
+        // Get video player element
         var videoPlayer = document.getElementById("videoPlayer");
 
-        // Function to toggle play/pause
-        function togglePlayPause() {
-            if (videoPlayer.paused) {
-                videoPlayer.play();
-                document.getElementById("playPauseBtn").textContent = "||";
-            } else {
-                videoPlayer.pause();
-                document.getElementById("playPauseBtn").textContent = "&#9658;";
-            }
+        // Array of video URLs
+        var playlistUrl = "playlist.json";
+
+        // Function to load video from playlist
+        function loadVideo(index) {
+            fetch(playlistUrl)
+                .then(response => response.json())
+                .then(data => {
+                    videoPlayer.src = data[index];
+                    videoPlayer.play();
+                })
+                .catch(error => console.error('Error loading playlist:', error));
         }
 
-        // Function to toggle full screen
-        function toggleFullScreen() {
+        // Load the first video when page loads
+        loadVideo(0);
+
+        // Event listener for play/pause button
+        document.getElementById("playPauseBtn").addEventListener("click", function() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+            } else {
+                videoPlayer.pause();
+            }
+        });
+
+        // Event listener for full screen button
+        document.getElementById("fullScreenBtn").addEventListener("click", function() {
             if (videoPlayer.requestFullscreen) {
                 videoPlayer.requestFullscreen();
             } else if (videoPlayer.mozRequestFullScreen) {
@@ -138,37 +153,17 @@
             } else if (videoPlayer.webkitRequestFullscreen) {
                 videoPlayer.webkitRequestFullscreen(); // Chrome, Safari and Opera
             }
-        }
-
-        // Function to reload video
-        function reloadVideo() {
-            videoPlayer.load();
-        }
-
-        // Function to share on Facebook
-        function shareOnFacebook() {
-            // Replace 'url' with the URL you want to share
-            var url = window.location.href;
-            window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), "_blank");
-        }
-
-        // Function to open radio
-        function openRadio() {
-            // Replace 'url' with the URL of your radio station
-            var url = "https://www.example.com/radio";
-            window.open(url, "_blank");
-        }
-
-        // Event listener to play/pause video when spacebar is pressed
-        document.addEventListener("keydown", function(event) {
-            if (event.code === "Space") {
-                togglePlayPause();
-            }
         });
 
-        // Event listener to play the next video when the current one ends
-        videoPlayer.addEventListener("ended", function() {
-            // Call your playNextVideo function here if you want to play the next video
+        // Event listener for reload button
+        document.getElementById("reloadBtn").addEventListener("click", function() {
+            videoPlayer.load();
+        });
+
+        // Event listener for share button
+        document.getElementById("shareBtn").addEventListener("click", function() {
+            // Implement sharing functionality here
+            alert("Share functionality will be implemented here.");
         });
     </script>
 </body>
