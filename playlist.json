@@ -1,30 +1,9 @@
-<script>
-    // Get the video player element
-    var videoPlayer = document.getElementById("videoPlayer");
+[
+     "https://cdn.glitch.me/1780eae4-2681-418a-b256-59d3398b90a7/lityanandha.mov?v=1714986982660",
+  "https://cdn.glitch.me/1780eae4-2681-418a-b256-59d3398b90a7/guli%20mata%20original.mov?v=1714958776423",
+  "https://cdn.glitch.me/788b2b36-4fc3-402d-889c-1f89e619ff8b/jelabi.mov?v=1714441166610",
+  "https://cdn.glitch.me/788b2b36-4fc3-402d-889c-1f89e619ff8b/entha%20pakkam%20dharmadurai%20.mov?v=1714399238312",
+  "https://cdn.glitch.me/788b2b36-4fc3-402d-889c-1f89e619ff8b/Aagaya%20vennilave.mov?v=1714098724164",
+  "https://cdn.glitch.me/788b2b36-4fc3-402d-889c-1f89e619ff8b/thuli%20thuliyai%20new.mov?v=1714129201051",
 
-    // Index to keep track of the current video being played
-    var currentVideoIndex = 0;
-
-    // Fetch the playlist from the JSON file
-    fetch('playlist.json')
-        .then(response => response.json())
-        .then(data => {
-            // Assign the playlist data to the 'playlist' variable
-            playlist = data;
-
-            // Play the first video when the page loads
-            videoPlayer.src = playlist[currentVideoIndex];
-            videoPlayer.play();
-        })
-        .catch(error => console.error('Error fetching playlist:', error));
-
-    // Function to play the next video in the playlist
-    function playNextVideo() {
-        currentVideoIndex = (currentVideoIndex + 1) % playlist.length;
-        videoPlayer.src = playlist[currentVideoIndex];
-        videoPlayer.play();
-    }
-
-    // Event listener to play the next video when the current one ends
-    videoPlayer.addEventListener("ended", playNextVideo);
-</script>
+]
