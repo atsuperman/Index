@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">SUPER TV</title> <!-- Initial page title -->
-    <style>
+        <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -113,11 +112,29 @@
     </div>
 
     <script>
-// Dynamically set the page title
-        var newTitle = "SUPER TV";
- // Replace with your desired title
-        document.getElementById("pageTitle").innerText = newTitle;
+// Function to set the page title dynamically
+function setPageTitle(title) {
+    document.title = title;
+}
 
+// Set the initial page title
+setPageTitle("SUPER TV");
+
+// Play the scheduled video
+function playScheduledVideo() {
+    videoPlayer.src = videoUrls[currentVideoIndex];
+    videoPlayer.play();
+    setPageTitle("SUPER TV - Now Playing: " + videoUrls[currentVideoIndex]); // Update page title
+}
+
+// Play the next video when the current one ends
+videoPlayer.addEventListener("ended", function() {
+    currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+    videoPlayer.src = videoUrls[currentVideoIndex];
+    videoPlayer.play();
+    setPageTitle("SUPER TV - Now Playing: " + videoUrls[currentVideoIndex]); // Update page title
+});
+     
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
         var fullScreenBtn = document.getElementById("fullScreenBtn");
