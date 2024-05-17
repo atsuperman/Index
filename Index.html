@@ -113,7 +113,7 @@
     </div>
 
     <script>
-document.title = "SUPER TV";
+        document.title = "SUPER TV";
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
         var fullScreenBtn = document.getElementById("fullScreenBtn");
@@ -126,7 +126,6 @@ document.title = "SUPER TV";
         var currentVideoIndex = 0;
         var controlsTimeout;
 
-        // Load playlist
         fetch(playlistUrl)
             .then(response => response.json())
             .then(data => {
@@ -137,41 +136,86 @@ document.title = "SUPER TV";
             })
             .catch(error => console.error('Error loading playlist:', error));
 
-        // Shuffle the playlist based on the current hour
         function shufflePlaylist() {
             var now = new Date();
-            var hours = now.getHours();
-            if (hours % 3 === 0) {
-                videoUrls.reverse();
-            } else if (hours % 3 === 1) {
-                videoUrls.sort();
-            } else if (hours % 3 === 2) {
-                var ordered = [];
-                for (var i = 0; i < videoUrls.length; i++) {
-                    if (i % 2 === 0) {
-                        ordered.push(videoUrls[i]);
-                    } else {
-                        ordered.unshift(videoUrls[i]);
-                    }
-                }
-                videoUrls = ordered;
+            var dayOfWeek = now.getDay();
+            switch (dayOfWeek) {
+                case 0:
+                    shuffleOrder1();
+                    break;
+                case 1:
+                    shuffleOrder2();
+                    break;
+                case 2:
+                    shuffleOrder3();
+                    break;
+                case 3:
+                    shuffleOrder4();
+                    break;
+                case 4:
+                    shuffleOrder5();
+                    break;
+                case 5:
+                    shuffleOrder6();
+                    break;
+                case 6:
+                    shuffleOrder7();
+                    break;
+                default:
+                    shuffleOrder1();
             }
         }
 
-        // Set the initial video to play based on the current time slot
+        function shuffleOrder1() {
+            videoUrls.reverse();
+        }
+
+        function shuffleOrder2() {
+            videoUrls.sort();
+        }
+
+        function shuffleOrder3() {
+            var ordered = [];
+            for (var i = 0; i < videoUrls.length; i++) {
+                if (i % 2 === 0) {
+                    ordered.push(videoUrls[i]);
+                } else {
+                    ordered.unshift(videoUrls[i]);
+                }
+            }
+            videoUrls = ordered;
+        }
+
+        function shuffleOrder4() {
+            videoUrls = videoUrls.slice().sort(() => Math.random() - 0.5);
+        }
+
+        function shuffleOrder5() {
+            videoUrls.sort((a, b) => a.localeCompare(b)).reverse();
+        }
+
+        function shuffleOrder6() {
+            videoUrls.sort().reverse();
+        }
+
+        function shuffleOrder7() {
+            for (let i = videoUrls.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [videoUrls[i], videoUrls[j]] = [videoUrls[j], videoUrls[i]];
+}
+        }
+
         function setInitialVideo() {
             var now = new Date();
             var minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
             currentVideoIndex = Math.floor(minutesSinceMidnight / 5) % videoUrls.length;
         }
 
-        // Play the scheduled video
         function playScheduledVideo() {
             videoPlayer.src = videoUrls[currentVideoIndex];
             videoPlayer.play();
         }
 
-        // Play the next video when the current one ends
         videoPlayer.addEventListener("ended", function() {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             videoPlayer.src = videoUrls[currentVideoIndex];
