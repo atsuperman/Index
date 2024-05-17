@@ -127,6 +127,28 @@
         var controlsTimeout;
         var intervalMinutes = 5; // 5 minutes interval between videos
 
+        // Predefined shuffle orders
+        function getShuffleOrder(hour, videos) {
+            let order = [];
+            switch (hour) {
+                case 0: // 12am: Last to first
+                    order = videos.slice().reverse();
+                    break;
+                case 1: // 1am: First to last
+                    order = videos.slice();
+                    break;
+                case 2: // 2am: 1, 3, 5, ... , 2, 4, 6, ...
+                    let odd = videos.filter((v, i) => i % 2 === 0);
+                    let even = videos.filter((v, i) => i % 2 !== 0);
+                    order = odd.concat(even);
+                    break;
+                default: // Default: First to last
+                    order = videos.slice();
+                    break;
+            }
+            return order;
+        }
+
         function loadVideo(index) {
             if (videoUrls.length > 0) {
                 var now = new Date();
@@ -142,7 +164,11 @@
             fetch(playlistUrl)
                 .then(response => response.json())
                 .then(data => {
-                    videoUrls = data;
+                    var now = new Date();
+                    var istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+                    var istTime = new Date(now.getTime() + istOffset);
+                    var hour = istTime.getUTCHours();
+                    videoUrls = getShuffleOrder(hour, data);
                     loadVideo(0);
                 })
                 .catch(error => console.error('Error loading playlist:', error));
@@ -204,4 +230,3 @@
     </script>
 </body>
 </html>
-
