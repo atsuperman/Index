@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             background-color: #000;
+            user-select: none; /* Prevent text selection */
         }
         .video-container {
             position: relative;
@@ -24,6 +25,7 @@
             height: auto;
             display: block;
             transition: opacity 1s ease-in-out;
+            pointer-events: none; /* Prevent interactions */
         }
         .overlay {
             position: absolute;
@@ -62,6 +64,7 @@
             top: 0;
             right: 5px;
             max-height: 80px;
+            pointer-events: none; /* Prevent interactions */
         }
         @media (max-width: 600px) {
             .logo {
@@ -86,10 +89,10 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false">
     <div class="video-container" id="videoContainer">
         <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444" alt="Logo" class="logo">
-        <video id="videoPlayer" autoplay>Your browser does not support the video tag.</video>
+        <video id="videoPlayer" autoplay controlslist="nodownload">Your browser does not support the video tag.</video>
         <div class="overlay" id="overlay">
             <div class="controls">
                 <button id="playPauseBtn">&#9658;</button>
@@ -110,9 +113,6 @@
     </div>
 
     <script>
- // Dynamically set the page title
-      document.title = "SUPER TV";
-
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
         var fullScreenBtn = document.getElementById("fullScreenBtn");
