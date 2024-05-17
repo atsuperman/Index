@@ -1,23 +1,36 @@
 name: Update Playlist
 
 on:
-  push:
-    paths:
-      - 'playlist.json' # Assuming the playlist file is in the root directory
-      - 'update_playlist.yml' # Adjust paths if necessary
+  schedule:
+    - cron: '0 6 * * *'  # Runs at 6:00 AM UTC which is 12:00 PM India Standard Time
 
 jobs:
-  update_playlist:
+  update-playlist:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
-      - name: Update playlist file
-        run: |
-          echo '[' > playlist_temp.json # Create temporary file
-          echo "  \"https://cdn.glitch.me/1780eae4-2681-418a-b256-59d3398b90a7/lityanandha.mov?v=1714986982660\"," >> playlist_temp.json # Replace with your CDN URLs
-          echo "  \"https://cdn.glitch.me/1780eae4-2681-418a-b256-59d3398b90a7/lityanandha.mov?v=1714986982660\"" >> playlist_temp.json
-          echo ']' >> playlist_temp.json
-          mv playlist_temp.json playlist.json # Replace the original playlist file with the updated one
-          
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Shuffle playlist
+      run: |
+        python3 -c "
+import json
+import random
+
+with open('playlist.json', 'r') as file:
+    playlist = json.load(file)
+
+random.shuffle(playlist)
+
+with open('playlist.json', 'w') as file:
+    json.dump(playlist, file, indent=4)
+        "
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add playlist.json
+        git commit -m 'Shuffle playlist'
+        git push
