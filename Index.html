@@ -91,23 +91,20 @@
 <body>
     <div class="video-container" id="videoContainer">
         <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444" alt="Logo" class="logo">
-        <video id="videoPlayer" autoplay>Your browser does not support the video tag.</video>
-        <div class="overlay">
+        <video id="videoPlayer" autoplay controls>Your browser does not support the video tag.</video>
+        <div class="overlay" id="overlay">
             <div class="controls">
                 <button id="playPauseBtn">&#9658;</button>
                 <button id="fullScreenBtn">
                     <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/zoom-fit-svgrepo-com.svg?v=1714291385987" alt="Full Screen" width="30" height="30">
                 </button>
-                <!-- Reload button -->
-                <button id="reloadBtn" style="background: none; border: none; cursor: pointer; font-size: 20px; width: 40px; height: 40px;">
+                <button id="reloadBtn">
                     <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/ReloadW.svg?v=1714271107351" alt="Reload" width="30" height="30">
                 </button>
-                <!-- Facebook button -->
-                <button onclick="openFacebook()" style="background: none; border: none; cursor: pointer;">
+                <button onclick="openFacebook()">
                     <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/fb.svg?v=1714293315523" alt="Facebook" width="30" height="30">
                 </button>
             </div>
-            <!-- Radio button -->
             <button class="radio-button" onclick="smoothOpenWebsite()">
                 <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818" alt="Radio" width="30" height="30">
             </button>
@@ -115,141 +112,84 @@
     </div>
 
     <script>
-        // Get video player element
         var videoPlayer = document.getElementById("videoPlayer");
+        var playPauseBtn = document.getElementById("playPauseBtn");
+        var fullScreenBtn = document.getElementById("fullScreenBtn");
+        var reloadBtn = document.getElementById("reloadBtn");
+        var videoContainer = document.getElementById("videoContainer");
+        var overlay = document.getElementById("overlay");
 
-        // Array of video URLs
         var playlistUrl = "playlist.json";
+        var videoUrls = [];
 
-        // Function to load video from playlist
         function loadVideo(index) {
+            if (videoUrls.length > 0) {
+                videoPlayer.src = videoUrls[index];
+                videoPlayer.play();
+            }
+        }
+
+        function fetchPlaylist() {
             fetch(playlistUrl)
                 .then(response => response.json())
                 .then(data => {
-                    videoPlayer.src = data[index];
-                    videoPlayer.play();
+                    videoUrls = data;
+                    loadVideo(0);
                 })
                 .catch(error => console.error('Error loading playlist:', error));
         }
 
-        // Load the first video when page loads
-        loadVideo(0);
+        fetchPlaylist();
 
-        // Define the total number of videos
-  var totalVideos = videoUrls.length;
+        function togglePlayPause() {
+            if (videoPlayer.paused || videoPlayer.ended) {
+                videoPlayer.play();
+                playPauseBtn.innerHTML = "&#10074;&#10074;";
+            } else {
+                videoPlayer.pause();
+                playPauseBtn.innerHTML = "&#9658;";
+            }
+        }
 
-  // Fetch video durations dynamically
-  var videoDurations = [];
-  var videoCount = 0;
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                videoContainer.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
 
-  function fetchVideoDuration(url, index) {
-    var video = document.createElement('video');
-    video.src = url;
-    video.preload = 'metadata';
-    video.onloadedmetadata = function() {
-      videoDurations[index] = Math.round(video.duration);
-      videoCount++;
-      if (videoCount === totalVideos) {
-        initializeSchedule();
-      }
-    };
-    video.onerror = function() {
-      console.error('Error loading video: ' + url);
-      videoCount++;
-      if (videoCount === totalVideos) {
-        initializeSchedule();
-      }
-    };
-    video.load();
-  }
+        function hideControlsAfterDelay() {
+            clearTimeout(controlsTimeout);
+            controlsTimeout = setTimeout(function () {
+                overlay.style.opacity = 0;
+            }, 5000);
+        }
 
-  // Initialize the schedule after fetching video durations
-  function initializeSchedule() {
-    console.log('Video durations:', videoDurations);
-    // Here you can proceed with creating the schedule using the fetched video durations
-  }
-
-  // Fetch durations for all videos
-  for (var i = 0; i < totalVideos; i++) {
-    fetchVideoDuration(videoUrls[i], i);
-  }
-
-  // Define the timeline schedule for each second of the day
-  var schedule = [];
-  var secondsInDay = 12 * 60 * 60; // 12 hours in seconds
-  // Use the fetched video durations to create the schedule
-  // This part will be implemented in the initializeSchedule function once all video durations are fetched
-
-  // Function to toggle play/pause
-    function togglePlayPause() {
-      if (videoPlayer.paused || videoPlayer.ended) {
-        videoPlayer.play();
-        playPauseBtn.innerHTML = "&#10074;&#10074;"; // Pause symbol
-      } else {
-        videoPlayer.pause();
-        playPauseBtn.innerHTML = "&#9658;"; // Play symbol
-      }
-    }
-
-    // Function to toggle fullscreen mode
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        videoContainer.requestFullscreen().catch((err) => {
-          console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+        playPauseBtn.addEventListener("click", togglePlayPause);
+        fullScreenBtn.addEventListener("click", toggleFullscreen);
+        reloadBtn.addEventListener("click", function() {
+            location.reload();
         });
-      } else {
-        document.exitFullscreen();
-      }
-    }
 
-    // Function to hide controls after a delay
-    function hideControlsAfterDelay() {
-      clearTimeout(controlsTimeout);
-      controlsTimeout = setTimeout(function () {
-        overlay.style.opacity = 0;
-      }, 5000);
-    }
+        videoContainer.addEventListener("mousemove", function () {
+            overlay.style.opacity = 1;
+            hideControlsAfterDelay();
+        });
 
-    // Event listener for play/pause button click
-    playPauseBtn.addEventListener("click", function () {
-      togglePlayPause();
-    });
+        function openFacebook() {
+            window.open("https://www.fb.com/atSUPERMAN");
+        }
 
-    // Event listener for fullscreen button click
-    fullScreenBtn.addEventListener("click", function () {
-      toggleFullscreen();
-    });
-
-    // Event listener for mouse movement to show controls
-    videoContainer.addEventListener("mousemove", function () {
-      overlay.style.opacity = 1;
-      hideControlsAfterDelay();
-    });
-
-
-  // Function to refresh the page smoothly
-  function smoothReloadPage() {
-    document.body.style.transition = "opacity 0.5s";
-    document.body.style.opacity = "0";
-    setTimeout(function () {
-      location.reload();
-    }, 500);
-  }
-
-  // Function to open Facebook link
-  function openFacebook() {
-    window.open("https://www.fb.com/atSUPERMAN");
-  }
-
-  // Function to smoothly open the provided website
-  function smoothOpenWebsite() {
-    document.body.style.transition = "opacity 0.5s";
-    document.body.style.opacity = "0";
-    setTimeout(function () {
-      window.location.href = "https://past-rainbow-mule.glitch.me/";
-    }, 500);
-  }
-</script>
+        function smoothOpenWebsite() {
+            document.body.style.transition = "opacity 0.5s";
+            document.body.style.opacity = "0";
+            setTimeout(function () {
+                window.location.href = "https://past-rainbow-mule.glitch.me/";
+            }, 500);
+        }
+    </script>
 </body>
-        </html>
-        
+</html>
