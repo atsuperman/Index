@@ -113,6 +113,11 @@
     </div>
 
     <script>
+// Dynamically set the page title
+        var newTitle = "SUPER TV";
+ // Replace with your desired title
+        document.getElementById("pageTitle").innerText = newTitle;
+
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
         var fullScreenBtn = document.getElementById("fullScreenBtn");
@@ -120,80 +125,62 @@
         var videoContainer = document.getElementById("videoContainer");
         var overlay = document.getElementById("overlay");
 
-        var videoUrls = []; // Array of video URLs
+        var playlistUrl = "playlist.json";
+        var videoUrls = [];
+        var currentVideoIndex = 0;
+        var controlsTimeout;
 
-        function fetchPlaylist() {
-            fetch('playlist.json')
-                .then(response => response.json())
-                .then(data => {
-                    videoUrls = data;
-                    generateShuffleOrders();
-                    startVideoPlayback();
-                })
-                .catch(error => console.error('Error loading playlist:', error));
-        }
+        // Load playlist
+        fetch(playlistUrl)
+            .then(response => response.json())
+            .then(data => {
+                videoUrls = data;
+                shufflePlaylist();
+                setInitialVideo();
+                playScheduledVideo();
+            })
+            .catch(error => console.error('Error loading playlist:', error));
 
-        function generateShuffleOrders() {
-            var totalVideos = videoUrls.length;
-            var shuffleOrders = [];
-            
-            for (var h = 0; h < 24; h++) {
-                var order = [];
-                if (h % 3 == 0) {
-                    // Last to first
-                    for (var i = totalVideos; i > 0; i--) {
-                        order.push(i);
-                    }
-                } else if (h % 3 == 1) {
-                    // First to last
-                    for (var i = 1; i <= totalVideos; i++) {
-                        order.push(i);
-                    }
-                } else {
-                    // 1, 3, 5, ..., 2, 4, 6, ...
-                    for (var i = 1; i <= totalVideos; i += 2) {
-                        order.push(i);
-                    }
-                    for (var i = 2; i <= totalVideos; i += 2) {
-                        order.push(i);
-                    }
-                }
-                shuffleOrders.push(order);
-            }
-            
-            window.shuffleOrders = shuffleOrders;
-        }
-
-        function startVideoPlayback() {
+        // Shuffle the playlist based on the current hour
+        function shufflePlaylist() {
             var now = new Date();
-            var currentHour = now.getHours();
-            var currentMinute = now.getMinutes();
-            var indexInHour = Math.floor(currentMinute / 5);
-            var order = shuffleOrders[currentHour];
-            var videoIndex = order[indexInHour] - 1; // -1 to adjust 1-based order to 0-based array index
-
-            videoPlayer.src = videoUrls[videoIndex];
-            videoPlayer.play();
-            playNextVideosInOrder(order, indexInHour + 1);
-        }
-
-        function playNextVideosInOrder(order, startIndex) {
-            if (startIndex >= order.length) {
-                startIndex = 0;
-            }
-
-            videoPlayer.addEventListener('ended', function() {
-                var nextVideoIndex = order[startIndex] - 1;
-                videoPlayer.src = videoUrls[nextVideoIndex];
-                videoPlayer.play();
-                startIndex++;
-                if (startIndex >= order.length) {
-                    startIndex = 0;
+            var hours = now.getHours();
+            if (hours % 3 === 0) {
+                videoUrls.reverse();
+            } else if (hours % 3 === 1) {
+                videoUrls.sort();
+            } else if (hours % 3 === 2) {
+                var ordered = [];
+                for (var i = 0; i < videoUrls.length; i++) {
+                    if (i % 2 === 0) {
+                        ordered.push(videoUrls[i]);
+                    } else {
+                        ordered.unshift(videoUrls[i]);
+                    }
                 }
-            });
+                videoUrls = ordered;
+            }
         }
 
-        fetchPlaylist();
+        // Set the initial video to play based on the current time slot
+        function setInitialVideo() {
+            var now = new Date();
+            var minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
+            currentVideoIndex = Math.floor(minutesSinceMidnight / 5) % videoUrls.length;
+        }
+
+        // Play the scheduled video
+        function playScheduledVideo() {
+            videoPlayer.src = videoUrls[currentVideoIndex];
+            videoPlayer.play();
+        }
+
+        // Play the next video when the current one ends
+        videoPlayer.addEventListener("ended", function() {
+            currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+            videoPlayer.src = videoUrls[currentVideoIndex];
+            videoPlayer.play();
+        });
 
         // Control button functions...
         function togglePlayPause() {
@@ -250,5 +237,3 @@
     </script>
 </body>
 </html>
-
-    
