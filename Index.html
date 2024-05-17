@@ -119,15 +119,12 @@
 
         var playlistUrl = "playlist.json";
         var videoUrls = [];
+        var controlsTimeout;
 
         function loadVideo(index) {
             if (videoUrls.length > 0) {
                 videoPlayer.src = videoUrls[index];
-                videoPlayer.play().then(() => {
-                    playPauseBtn.innerHTML = "&#10074;&#10074;"; // Pause symbol
-                }).catch(error => {
-                    console.error('Error playing video:', error);
-                });
+                videoPlayer.play();
             }
         }
 
@@ -145,11 +142,8 @@
 
         function togglePlayPause() {
             if (videoPlayer.paused || videoPlayer.ended) {
-                videoPlayer.play().then(() => {
-                    playPauseBtn.innerHTML = "&#10074;&#10074;";
-                }).catch(error => {
-                    console.error('Error playing video:', error);
-                });
+                videoPlayer.play();
+                playPauseBtn.innerHTML = "&#10074;&#10074;";
             } else {
                 videoPlayer.pause();
                 playPauseBtn.innerHTML = "&#9658;";
@@ -166,11 +160,16 @@
             }
         }
 
+        function showControls() {
+            overlay.style.opacity = 1;
+            hideControlsAfterDelay();
+        }
+
         function hideControlsAfterDelay() {
             clearTimeout(controlsTimeout);
             controlsTimeout = setTimeout(function () {
                 overlay.style.opacity = 0;
-            }, 5000);
+            }, 3000); // 3 seconds
         }
 
         playPauseBtn.addEventListener("click", togglePlayPause);
@@ -179,10 +178,11 @@
             location.reload();
         });
 
-        videoContainer.addEventListener("mousemove", function () {
-            overlay.style.opacity = 1;
-            hideControlsAfterDelay();
-        });
+        videoContainer.addEventListener("mousemove", showControls);
+        videoContainer.addEventListener("touchstart", showControls);
+        videoContainer.addEventListener("click", showControls); // For touch devices
+
+        hideControlsAfterDelay();
 
         function openFacebook() {
             window.open("https://www.fb.com/atSUPERMAN");
