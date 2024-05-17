@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">SUPER TV</title> <!-- Initial page title -->
+    <title>SUPER TV</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #000;
-            user-select: none; /* Prevent text selection */
+            user-select: none;
         }
         .video-container {
             position: relative;
@@ -25,7 +25,7 @@
             height: auto;
             display: block;
             transition: opacity 1s ease-in-out;
-            pointer-events: none; /* Prevent interactions */
+            pointer-events: none;
         }
         .overlay {
             position: absolute;
@@ -64,7 +64,7 @@
             top: 0;
             right: 5px;
             max-height: 80px;
-            pointer-events: none; /* Prevent interactions */
+            pointer-events: none;
         }
         @media (max-width: 600px) {
             .logo {
@@ -113,10 +113,7 @@
     </div>
 
     <script>
-// Dynamically set the page title
-        var newTitle = "SUPER TV";
- // Replace with your desired title
-        document.getElementById("pageTitle").innerText = newTitle;
+        document.title = "SUPER TV";
 
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
@@ -128,10 +125,15 @@
         var playlistUrl = "playlist.json";
         var videoUrls = [];
         var controlsTimeout;
+        var intervalMinutes = 5; // 5 minutes interval between videos
 
         function loadVideo(index) {
             if (videoUrls.length > 0) {
-                videoPlayer.src = videoUrls[index];
+                var now = new Date();
+                var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+                var minutesSinceStartOfDay = Math.floor((now - startOfDay) / 60000);
+                var videoIndex = Math.floor(minutesSinceStartOfDay / intervalMinutes) % videoUrls.length;
+                videoPlayer.src = videoUrls[videoIndex];
                 videoPlayer.play();
             }
         }
@@ -202,3 +204,4 @@
     </script>
 </body>
 </html>
+
