@@ -1,312 +1,118 @@
-        <!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="en">
-
-  <head>
-
-    <meta charset="UTF-8" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SUPER TV</title>
-
     <!-- Fixed page title -->
-
     <style>
-
-      body {
-
-        font-family: Arial, sans-serif;
-
-        margin: 0;
-
-        padding: 0;
-
-        background-color: #000;
-
-      }
-
-      .video-container {
-
-        position: relative;
-
-        max-width: 800px;
-
-        margin: 20px auto;
-
-        border-radius: 10px;
-
-        overflow: hidden;
-
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-      }
-
-      video {
-
-        width: 100%;
-
-        height: auto;
-
-        display: block;
-
-        transition: opacity 1s ease-in-out;
-
-      }
-
-      .overlay {
-
-        position: absolute;
-
-        bottom: 0;
-
-        left: 0;
-
-        right: 0;
-
-        background-color: rgba(0, 0, 0, 0.7);
-
-        padding: 10px;
-
-        box-sizing: border-box;
-
-        display: flex;
-
-        justify-content: space-between; /* Align buttons to the right */
-
-        align-items: center;
-
-        transition: opacity 0.3s ease;
-
-        opacity: 1;
-
-      }
-
-      .controls {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        width: 200px; /* Adjust the width as needed */
-
-      }
-
-      .controls button {
-
-        background-color: transparent;
-
-        border: none;
-
-        color: #fff;
-
-        cursor: pointer;
-
-        font-size: 20px;
-
-        width: 40px; /* Set width to match play button */
-
-        height: 40px; /* Set height to match play button */
-
-        transition: color 0.3s ease;
-
-      }
-
-      .controls button:hover {
-
-        color: #ffa500;
-
-      }
-
-      .logo {
-
-        position: absolute;
-
-        top: 0;
-
-        right: 5px;
-
-        max-height: 80px; /* Adjust max-height as needed */
-
-      }
-
-
-      /* Adjust logo size for smaller screens */
-
-      @media (max-width: 600px) {
-
-        .logo {
-
-          max-height: 60px; /* Adjust smaller logo size for smaller screens */
-
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
         }
-
-      }
-
-      .radio-button {
-
-        background: none;
-
-        border: none;
-
-        cursor: pointer;
-
-      }
-
-      .center-message {
-
-        position: absolute;
-
-        top: 50%;
-
-        left: 50%;
-
-        transform: translate(-50%, -50%);
-
-        background-color: rgba(0, 0, 0, 0.7);
-
-        color: white;
-
-        padding: 10px;
-
-        border-radius: 5px;
-
-        display: none;
-
-      }
-
+        .video-container {
+            position: relative;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: opacity 1s ease-in-out;
+        }
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between; /* Align buttons to the right */
+            align-items: center;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 200px; /* Adjust the width as needed */
+        }
+        .controls button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+            width: 40px; /* Set width to match play button */
+            height: 40px; /* Set height to match play button */
+            transition: color 0.3s ease;
+        }
+        .controls button:hover {
+            color: #ffa500;
+        }
+        .logo {
+            position: absolute;
+            top: 0;
+            right: 5px;
+            max-height: 80px; /* Adjust max-height as needed */
+        }
+        /* Adjust logo size for smaller screens */
+        @media (max-width: 600px) {
+            .logo {
+                max-height: 60px; /* Adjust smaller logo size for smaller screens */
+            }
+        }
+        .radio-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .center-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
-
-  </head>
-
-  <body>
-
+</head>
+<body>
     <div class="video-container" id="videoContainer">
-
-      <img
-
-        src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444"
-
-        alt="Logo"
-
-        class="logo"
-
-      />
-
-      <video id="videoPlayer" autoplay>
-
-        Your browser does not support the video tag.
-
-      </video>
-
-      <div class="overlay">
-
-        <div class="controls">
-
-          <button id="playPauseBtn">&#9658;</button>
-
-          <button id="fullScreenBtn">
-
-            <img
-
-              src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/zoom-fit-svgrepo-com.svg?v=1714291385987"
-
-              alt="Full Screen"
-
-              width="30"
-
-              height="30"
-
-            />
-
-          </button>
-
-          <!-- Reload button -->
-
-          <button
-
-            id="reloadBtn"
-
-            style="
-
-              background: none;
-
-              border: none;
-
-              cursor: pointer;
-
-              font-size: 20px;
-
-              width: 40px; /* Set width to match play button */
-
-              height: 40px; /* Set height to match play button */
-
-            "
-
-          >
-
-            <img
-
-              src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/ReloadW.svg?v=1714271107351"
-
-              alt="Reload"
-
-              width="30"
-
-              height="30"
-
-            />
-
-          </button>
-
-          <!-- Facebook button -->
-
-          <button
-
-            onclick="openFacebook()"
-
-            style="background: none; border: none; cursor: pointer"
-
-          >
-
-            <img
-
-              src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/fb.svg?v=1714293315523"
-
-              alt="Facebook"
-
-              width="30"
-
-              height="30"
-
-            />
-
-          </button>
-
+        <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444" alt="Logo" class="logo">
+        <video id="videoPlayer" autoplay>Your browser does not support the video tag.</video>
+        <div class="overlay">
+            <div class="controls">
+                <button id="playPauseBtn">&#9658;</button>
+                <button id="fullScreenBtn">
+                    <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/zoom-fit-svgrepo-com.svg?v=1714291385987" alt="Full Screen" width="30" height="30">
+                </button>
+                <!-- Reload button -->
+                <button id="reloadBtn" style="background: none; border: none; cursor: pointer; font-size: 20px; width: 40px; height: 40px;">
+                    <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/ReloadW.svg?v=1714271107351" alt="Reload" width="30" height="30">
+                </button>
+                <!-- Facebook button -->
+                <button onclick="openFacebook()" style="background: none; border: none; cursor: pointer;">
+                    <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/fb.svg?v=1714293315523" alt="Facebook" width="30" height="30">
+                </button>
+            </div>
+            <!-- Radio button -->
+            <button class="radio-button" onclick="smoothOpenWebsite()">
+                <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818" alt="Radio" width="30" height="30">
+            </button>
         </div>
-
-        <!-- Radio button -->
-
-        <button class="radio-button" onclick="smoothOpenWebsite()">
-
-          <img
-
-            src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818"
-
-            alt="Radio"
-
-            width="30"
-
-            height="30"
-
-          />
-
-        </button>
-
-      </div>
-
     </div>
-
 
     <script>
         // Get video player element
@@ -329,61 +135,121 @@
         // Load the first video when page loads
         loadVideo(0);
 
-        // Function to refresh the page smoothly
+        // Define the total number of videos
+  var totalVideos = videoUrls.length;
 
-      document
+  // Fetch video durations dynamically
+  var videoDurations = [];
+  var videoCount = 0;
 
-        .getElementById("reloadBtn")
+  function fetchVideoDuration(url, index) {
+    var video = document.createElement('video');
+    video.src = url;
+    video.preload = 'metadata';
+    video.onloadedmetadata = function() {
+      videoDurations[index] = Math.round(video.duration);
+      videoCount++;
+      if (videoCount === totalVideos) {
+        initializeSchedule();
+      }
+    };
+    video.onerror = function() {
+      console.error('Error loading video: ' + url);
+      videoCount++;
+      if (videoCount === totalVideos) {
+        initializeSchedule();
+      }
+    };
+    video.load();
+  }
 
-        .addEventListener("click", function () {
+  // Initialize the schedule after fetching video durations
+  function initializeSchedule() {
+    console.log('Video durations:', videoDurations);
+    // Here you can proceed with creating the schedule using the fetched video durations
+  }
 
-          smoothReloadPage();
+  // Fetch durations for all videos
+  for (var i = 0; i < totalVideos; i++) {
+    fetchVideoDuration(videoUrls[i], i);
+  }
 
+  // Define the timeline schedule for each second of the day
+  var schedule = [];
+  var secondsInDay = 12 * 60 * 60; // 12 hours in seconds
+  // Use the fetched video durations to create the schedule
+  // This part will be implemented in the initializeSchedule function once all video durations are fetched
+
+  // Function to toggle play/pause
+    function togglePlayPause() {
+      if (videoPlayer.paused || videoPlayer.ended) {
+        videoPlayer.play();
+        playPauseBtn.innerHTML = "&#10074;&#10074;"; // Pause symbol
+      } else {
+        videoPlayer.pause();
+        playPauseBtn.innerHTML = "&#9658;"; // Play symbol
+      }
+    }
+
+    // Function to toggle fullscreen mode
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        videoContainer.requestFullscreen().catch((err) => {
+          console.log(`Error attempting to enable full-screen mode: ${err.message}`);
         });
-
-
-      function smoothReloadPage() {
-
-        document.body.style.transition = "opacity 0.5s";
-
-        document.body.style.opacity = "0";
-
-        setTimeout(function () {
-
-          location.reload();
-
-        }, 500);
-
+      } else {
+        document.exitFullscreen();
       }
+    }
+
+    // Function to hide controls after a delay
+    function hideControlsAfterDelay() {
+      clearTimeout(controlsTimeout);
+      controlsTimeout = setTimeout(function () {
+        overlay.style.opacity = 0;
+      }, 5000);
+    }
+
+    // Event listener for play/pause button click
+    playPauseBtn.addEventListener("click", function () {
+      togglePlayPause();
+    });
+
+    // Event listener for fullscreen button click
+    fullScreenBtn.addEventListener("click", function () {
+      toggleFullscreen();
+    });
+
+    // Event listener for mouse movement to show controls
+    videoContainer.addEventListener("mousemove", function () {
+      overlay.style.opacity = 1;
+      hideControlsAfterDelay();
+    });
 
 
-      // Function to open Facebook link
+  // Function to refresh the page smoothly
+  function smoothReloadPage() {
+    document.body.style.transition = "opacity 0.5s";
+    document.body.style.opacity = "0";
+    setTimeout(function () {
+      location.reload();
+    }, 500);
+  }
 
-      function openFacebook() {
+  // Function to open Facebook link
+  function openFacebook() {
+    window.open("https://www.fb.com/atSUPERMAN");
+  }
 
-        window.open("https://www.fb.com/atSUPERMAN");
-
-      }
-
-
-      // Function to smoothly open the provided website
-
-      function smoothOpenWebsite() {
-
-        document.body.style.transition = "opacity 0.5s";
-
-        document.body.style.opacity = "0";
-
-        setTimeout(function () {
-
-          window.location.href = "https://past-rainbow-mule.glitch.me/";
-
-        }, 500);
-
-      }
-
-    </script>
+  // Function to smoothly open the provided website
+  function smoothOpenWebsite() {
+    document.body.style.transition = "opacity 0.5s";
+    document.body.style.opacity = "0";
+    setTimeout(function () {
+      window.location.href = "https://past-rainbow-mule.glitch.me/";
+    }, 500);
+  }
+</script>
 </body>
-</html>
-
+        </html>
         
