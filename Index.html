@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUPER TV</title>
+    <title id="pageTitle">SUPER TV</title> <!-- Initial page title -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -113,6 +113,11 @@
     </div>
 
     <script>
+// Dynamically set the page title
+        var newTitle = "SUPER TV";
+ // Replace with your desired title
+        document.getElementById("pageTitle").innerText = newTitle;
+
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
         var fullScreenBtn = document.getElementById("fullScreenBtn");
