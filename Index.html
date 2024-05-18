@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUPER TV</title>
-        <style>
+    <title>SUPER TV</title>
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -209,6 +209,7 @@
             var now = new Date();
             var minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
             currentVideoIndex = Math.floor(minutesSinceMidnight / 5) % videoUrls.length;
+            playScheduledVideo();
         }
 
         function playScheduledVideo() {
@@ -218,11 +219,9 @@
 
         videoPlayer.addEventListener("ended", function() {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-            videoPlayer.src = videoUrls[currentVideoIndex];
-            videoPlayer.play();
+            playScheduledVideo();
         });
 
-        // Control button functions...
         function togglePlayPause() {
             if (videoPlayer.paused || videoPlayer.ended) {
                 videoPlayer.play();
@@ -277,3 +276,4 @@
     </script>
 </body>
 </html>
+
