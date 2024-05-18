@@ -280,10 +280,20 @@
 
         playPauseBtn.addEventListener("click", togglePlayPause);
         fullScreenBtn.addEventListener("click", toggleFullscreen);
-        reloadBtn.addEventListener("click", function() {
-    // Show message
-    var centerMessage = document.querySelector(".center-message");
-    centerMessage.innerText = "If You Refresh this site you catch last five minutes live content again to watch";
+        var reloadBtn = document.getElementById("reloadBtn");
+var centerMessage = document.querySelector(".center-message");
+var reloadClickCount = 0;
+
+reloadBtn.addEventListener("click", function() {
+    reloadClickCount++;
+    
+    if (reloadClickCount === 1) {
+        centerMessage.innerText = "If You Refresh this site you catch last five minutes live content again to watch";
+    } else if (reloadClickCount === 2) {
+        centerMessage.innerText = "Adjust your Mobile / Device Lock Screen / Lock Orientations / Rotate Screen / options Enable / Disable you can enjoy the Tv in Full screen View!";
+        reloadClickCount = 0; // Reset the count after showing the second message
+    }
+    
     centerMessage.style.display = "block";
 
     // Hide message after 3 seconds
@@ -291,7 +301,6 @@
         centerMessage.style.display = "none";
     }, 3000);
 });
-
         videoContainer.addEventListener("mousemove", showControls);
         videoContainer.addEventListener("touchstart", showControls);
         videoContainer.addEventListener("click", showControls); // For touch devices
