@@ -127,14 +127,15 @@
         var controlsTimeout;
 
         fetch(playlistUrl)
-            .then(response => response.json())
-            .then(data => {
-                videoUrls = data;
-                shufflePlaylist();
-                setInitialVideo();
-                playScheduledVideo();
-            })
-            .catch(error => console.error('Error loading playlist:', error));
+    .then(response => response.json())
+    .then(data => {
+        console.log("Fetched playlist data:", data); // Log the fetched data
+        videoUrls = data;
+        shufflePlaylist();
+        setInitialVideo();
+        playScheduledVideo();
+    })
+    .catch(error => console.error('Error loading playlist:', error));
 
         function shufflePlaylist() {
             var now = new Date();
