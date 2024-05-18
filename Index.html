@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUPER TV</title>
-    <style>
+<title>SUPER TV</title>
+        <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,12 +21,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         video {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: opacity 1s ease-in-out;
-            pointer-events: none; /* Prevent interactions */
-        }
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity 1s ease-in-out;
+    /* pointer-events: none; Remove this line */
+}
         .overlay {
             position: absolute;
             bottom: 0;
@@ -92,7 +92,7 @@
 <body oncontextmenu="return false">
     <div class="video-container" id="videoContainer">
         <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444" alt="Logo" class="logo">
-        <video id="videoPlayer" autoplay controlslist="nodownload">Your browser does not support the video tag.</video>
+        <video id="videoPlayer" autoplay controls controlslist="nodownload">Your browser does not support the video tag.</video>
         <div class="overlay" id="overlay">
             <div class="controls">
                 <button id="playPauseBtn">&#9658;</button>
@@ -132,6 +132,7 @@
                 videoUrls = data;
                 shufflePlaylist();
                 setInitialVideo();
+                playScheduledVideo();
             })
             .catch(error => console.error('Error loading playlist:', error));
 
@@ -139,23 +140,64 @@
             var now = new Date();
             var dayOfWeek = now.getDay();
             switch (dayOfWeek) {
-                case 0: shuffleOrder1(); break;
-                case 1: shuffleOrder2(); break;
-                case 2: shuffleOrder3(); break;
-                case 3: shuffleOrder4(); break;
-                case 4: shuffleOrder5(); break;
-                case 5: shuffleOrder6(); break;
-                case 6: shuffleOrder7(); break;
-                default: shuffleOrder1();
+                case 0:
+                    shuffleOrder1();
+                    break;
+                case 1:
+                    shuffleOrder2();
+                    break;
+                case 2:
+                    shuffleOrder3();
+                    break;
+                case 3:
+                    shuffleOrder4();
+                    break;
+                case 4:
+                    shuffleOrder5();
+                    break;
+                case 5:
+                    shuffleOrder6();
+                    break;
+                case 6:
+                    shuffleOrder7();
+                    break;
+                default:
+                    shuffleOrder1();
             }
         }
 
-        function shuffleOrder1() { videoUrls.reverse(); }
-        function shuffleOrder2() { videoUrls.sort(); }
-        function shuffleOrder3() { videoUrls = videoUrls.reduce((ordered, url, i) => i % 2 === 0 ? ordered.concat(url) : [url].concat(ordered), []); }
-        function shuffleOrder4() { videoUrls.sort(() => Math.random() - 0.5); }
-        function shuffleOrder5() { videoUrls.sort((a, b) => a.localeCompare(b)).reverse(); }
-        function shuffleOrder6() { videoUrls.sort().reverse(); }
+        function shuffleOrder1() {
+            videoUrls.reverse();
+        }
+
+        function shuffleOrder2() {
+            videoUrls.sort();
+        }
+
+        function shuffleOrder3() {
+    var ordered = [];
+    for (var i = 0; i < videoUrls.length; i++) {
+        if (i % 2 === 0) {
+            ordered.push(videoUrls[i]);
+        } else {
+            ordered.unshift(videoUrls[i]);
+        }
+    }
+    videoUrls = ordered;
+}
+
+        function shuffleOrder4() {
+            videoUrls.sort(() => Math.random() - 0.5);
+        }
+
+        function shuffleOrder5() {
+            videoUrls.sort((a, b) => a.localeCompare(b)).reverse();
+        }
+
+        function shuffleOrder6() {
+            videoUrls.sort().reverse();
+        }
+
         function shuffleOrder7() {
             for (let i = videoUrls.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -167,7 +209,6 @@
             var now = new Date();
             var minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
             currentVideoIndex = Math.floor(minutesSinceMidnight / 5) % videoUrls.length;
-            playScheduledVideo();
         }
 
         function playScheduledVideo() {
@@ -177,9 +218,11 @@
 
         videoPlayer.addEventListener("ended", function() {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-            playScheduledVideo();
+            videoPlayer.src = videoUrls[currentVideoIndex];
+            videoPlayer.play();
         });
 
+        // Control button functions...
         function togglePlayPause() {
             if (videoPlayer.paused || videoPlayer.ended) {
                 videoPlayer.play();
@@ -234,4 +277,3 @@
     </script>
 </body>
 </html>
-
