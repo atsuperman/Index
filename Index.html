@@ -110,6 +110,7 @@
                 <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818" alt="Radio" width="30" height="30">
             </button>
         </div>
+<div class="center-message"></div>
     </div>
 
     <script>
@@ -280,8 +281,16 @@
         playPauseBtn.addEventListener("click", togglePlayPause);
         fullScreenBtn.addEventListener("click", toggleFullscreen);
         reloadBtn.addEventListener("click", function() {
-            location.reload();
-        });
+    // Show message
+    var centerMessage = document.querySelector(".center-message");
+    centerMessage.innerText = "If You Refresh this site you catch last five minutes live content again to watch";
+    centerMessage.style.display = "block";
+
+    // Hide message after 3 seconds
+    setTimeout(function() {
+        centerMessage.style.display = "none";
+    }, 3000);
+});
 
         videoContainer.addEventListener("mousemove", showControls);
         videoContainer.addEventListener("touchstart", showControls);
