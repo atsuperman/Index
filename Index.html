@@ -187,7 +187,7 @@
         }
 
         function shuffleOrder4() {
-            videoUrls = videoUrls.slice().sort(() => Math.random() - 0.5);
+            videoUrls.sort(() => Math.random() - 0.5);
         }
 
         function shuffleOrder5() {
@@ -202,7 +202,7 @@
             for (let i = videoUrls.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [videoUrls[i], videoUrls[j]] = [videoUrls[j], videoUrls[i]];
-}
+            }
         }
 
         function setInitialVideo() {
