@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUPER TV</title>
-        <style>
+    <title>SUPER TV</title>
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -113,7 +113,7 @@
     </div>
 
     <script>
-document.title = "SUPER TV";
+        document.title = "SUPER TV";
         var videoPlayer = document.getElementById("videoPlayer");
         var playPauseBtn = document.getElementById("playPauseBtn");
         var fullScreenBtn = document.getElementById("fullScreenBtn");
@@ -131,38 +131,51 @@ document.title = "SUPER TV";
             .then(response => response.json())
             .then(data => {
                 videoUrls = data;
-                shufflePlaylist();
+                createSchedule();
                 setInitialVideo();
                 playScheduledVideo();
             })
             .catch(error => console.error('Error loading playlist:', error));
 
-        // Shuffle the playlist based on the current hour
-        function shufflePlaylist() {
-            var now = new Date();
-            var hours = now.getHours();
-            if (hours % 3 === 0) {
-                videoUrls.reverse();
-            } else if (hours % 3 === 1) {
-                videoUrls.sort();
-            } else if (hours % 3 === 2) {
-                var ordered = [];
-                for (var i = 0; i < videoUrls.length; i++) {
-                    if (i % 2 === 0) {
-                        ordered.push(videoUrls[i]);
-                    } else {
-                        ordered.unshift(videoUrls[i]);
-                    }
-                }
-                videoUrls = ordered;
+        // Create schedule for each day of the week
+        function createSchedule() {
+            var totalVideos = videoUrls.length;
+            var slotsPerDay = 288; // 24 hours * 60 minutes / 5 minutes per slot
+            var schedule = [];
+
+            // Create a schedule with repeating indices to cover 288 slots per day
+            for (var i = 0; i < slotsPerDay; i++) {
+                var index = i % totalVideos;
+                schedule.push(index);
             }
+
+            // Assign different orders for each day of the week
+            var now = new Date();
+            var indianTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+            var dayOfWeek = indianTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+            if (dayOfWeek === 0) { // Sunday
+                schedule.reverse();
+            } else if (dayOfWeek === 1) { // Monday
+                schedule.sort();
+            } // Add conditions for other days here if needed
+
+            // Update the playlist schedule
+            videoUrls = schedule.map(index => videoUrls[index]);
         }
 
-        // Set the initial video to play based on the current time slot
+        // Set the initial video to play based on the current day of the week and time slot
         function setInitialVideo() {
             var now = new Date();
-            var minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-            currentVideoIndex = Math.floor(minutesSinceMidnight / 5) % videoUrls.length;
+            var indianTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+            var minutesSinceMidnight = indianTime.getHours() * 60+ indianTime.getMinutes();
+            var slotsPerDay = 288; // 24 hours * 60 minutes / 5 minutes per slot
+
+            // Calculate the current slot index
+            var currentSlotIndex = Math.floor(minutesSinceMidnight / (24 * 60 / slotsPerDay));
+
+            // Calculate the initial video index based on the current slot index
+            currentVideoIndex = currentSlotIndex % videoUrls.length;
         }
 
         // Play the scheduled video
@@ -232,4 +245,5 @@ document.title = "SUPER TV";
         }
     </script>
 </body>
-</html>
+    </html>
+    
