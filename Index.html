@@ -205,17 +205,10 @@
             }
         }
 
-        function setInitialVideo() {
-            var now = new Date();
-            var minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
-            currentVideoIndex = Math.floor(minutesSinceMidnight / 5) % videoUrls.length;
-        }
-
         function playScheduledVideo() {
-            videoPlayer.src = videoUrls[currentVideoIndex];
-            videoPlayer.play();
-        }
-
+    videoPlayer.src = videoUrls[currentVideoIndex];
+    videoPlayer.play();
+}
         videoPlayer.addEventListener("ended", function() {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             videoPlayer.src = videoUrls[currentVideoIndex];
