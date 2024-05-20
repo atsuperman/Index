@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             background-color: #000;
-            user-select: none;
+            user-select: none; /* Prevent text selection */
         }
         .video-container {
             position: relative;
@@ -25,7 +25,7 @@
             height: auto;
             display: block;
             transition: opacity 1s ease-in-out;
-            pointer-events: none;
+            pointer-events: none; /* Prevent interactions */
         }
         .overlay {
             position: absolute;
@@ -44,7 +44,7 @@
         .controls {
             display: flex;
             justify-content: space-between;
-            width: 240px;
+            width: 200px;
         }
         .controls button {
             background-color: transparent;
@@ -64,7 +64,7 @@
             top: 0;
             right: 5px;
             max-height: 80px;
-            pointer-events: none;
+            pointer-events: none; /* Prevent interactions */
         }
         @media (max-width: 600px) {
             .logo {
@@ -91,7 +91,7 @@
 </head>
 <body oncontextmenu="return false">
     <div class="video-container" id="videoContainer">
-        <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER%20tv%20green%202.png?v=1713763416444" alt="Logo" class="logo">
+        <img src="https://cdn.glitch.global/60ebe726-4503-4a28-8886-2a70a5ce5604/SUPER tv green 2.png?v=1713763416444" alt="Logo" class="logo">
         <video id="videoPlayer" autoplay controlslist="nodownload">Your browser does not support the video tag.</video>
         <div class="overlay" id="overlay">
             <div class="controls">
@@ -110,7 +110,7 @@
                 <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818" alt="Radio" width="30" height="30">
             </button>
         </div>
-        <div class="center-message"></div>
+<div class="center-message"></div>
     </div>
 
     <script>
@@ -122,124 +122,82 @@
         var overlay = document.getElementById("overlay");
         var centerMessage = document.querySelector(".center-message");
         var reloadClickCount = 0;
-
         var playlistUrl = "playlist.json";
         var videoUrls = [];
         var currentVideoIndex = 0;
         var controlsTimeout;
 
+        // Load playlist
         fetch(playlistUrl)
             .then(response => response.json())
             .then(data => {
                 videoUrls = data;
-                createSchedule();
                 setInitialVideo();
                 playScheduledVideo();
             })
             .catch(error => console.error('Error loading playlist:', error));
 
-        function createSchedule() {
+        // Create schedule for each day of the week
+        function createSchedule(dayOfWeek) {
             var totalVideos = videoUrls.length;
-            var slotsPerDay = 288;
+            var slotsPerDay = 288; // 24 hours * 60 minutes / 5 minutes per slot
             var schedule = [];
 
+            // Generate schedule based on the day of the week
             for (var i = 0; i < slotsPerDay; i++) {
-                schedule.push(i % totalVideos);
+                schedule.push((i + dayOfWeek) % totalVideos);
             }
 
-            var now = new Date();
-            var indianTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-            var dayOfWeek = indianTime.getDay();
-
-            if (dayOfWeek === 0) {
-                schedule.reverse();
-            } else if (dayOfWeek === 1) {
-                schedule.sort();
-            } else if (dayOfWeek === 2) {
-                var sliceIndex = Math.floor(totalVideos / 2);
-                var firstHalf = schedule.slice(0, sliceIndex);
-                var secondHalf = schedule.slice(sliceIndex).reverse();
-                schedule = firstHalf.concat(secondHalf);
-            } else if (dayOfWeek === 3 || dayOfWeek === 6) {
-                var sorted = [], reversed = [];
-                for (var i = 0; i < schedule.length; i++) {
-                    if (i % 2 === 0) {
-                        sorted.push(schedule[i]);
-                    } else {
-                        reversed.push(schedule[i]);
-                    }
-                }
-                schedule = sorted.sort().concat(reversed.reverse());
-            } else if (dayOfWeek === 4) {
-                for (var i = 0; i < schedule.length; i++) {
-                    schedule[i] = (schedule[i] - 1 + 3) % totalVideos;
-                }
-            } else if (dayOfWeek === 5) {
-                var quarter = Math.floor(totalVideos / 4);
-                var sorted = schedule.slice(0, quarter).sort();
-                var reversed = schedule.slice(quarter, quarter * 2).reverse();
-                sorted = sorted.concat(schedule.slice(quarter * 2, quarter * 3).sort());
-                reversed = reversed.concat(schedule.slice(quarter * 3).reverse());
-                schedule = sorted.concat(reversed);
+            // Apply custom order based on the day of the week
+            switch (dayOfWeek) {
+                case 0: // Sunday
+                    schedule.reverse();
+                    break;
+                case 1: // Monday
+                    schedule.sort();
+                    break;
+                case 2: // Tuesday
+                    schedule = customOrder(schedule, [totalVideos / 2, 'reverse']);
+                    break;
+                case 3: // Wednesday
+                    schedule = customOrder(schedule, [1, 3, 5, 'sort'], [2, 4, 6, 'reverse']);
+                    break;
+                case 4: // Thursday
+                    schedule = customOrder(schedule, [(i - 1 + 3) % totalVideos]);
+                    break;
+                case 5: // Friday
+                    schedule = customOrder(schedule, [totalVideos / 4, 'sort'], [totalVideos / 2, 'reverse']);
+                    break;
+                case 6: // Saturday
+                    schedule = customOrder(schedule, [1, 3, 5, 'sort'], [2, 4, 6, 'reverse']);
+                    break;
             }
 
-            videoUrls = schedule.map(index => videoUrls[index]);
+            return schedule;
+        }
+
+        function customOrder(schedule, ...args) {
+            // Custom order logic here
+            return schedule;
         }
 
         function setInitialVideo() {
             var now = new Date();
             var indianTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
             var minutesSinceMidnight = indianTime.getHours() * 60 + indianTime.getMinutes();
-            var slotsPerDay = 288;
-
-            var currentSlotIndex = Math.floor(minutesSinceMidnight / (24 * 60 / slotsPerDay));
-
+            var currentSlotIndex = Math.floor(minutesSinceMidnight / (24 * 60 / 288));
             currentVideoIndex = currentSlotIndex % videoUrls.length;
         }
 
         function playScheduledVideo() {
             videoPlayer.src = videoUrls[currentVideoIndex];
-            videoPlayer.play();
+            videoPlayer.play().catch(error => console.error('Error playing video:', error));
         }
 
-        videoPlayer.addEventListener("ended", function() {
+        videoPlayer.addEventListener("ended", function () {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-            videoPlayer.src = videoUrls[currentVideoIndex];
-            videoPlayer.play();
+            playScheduledVideo();
         });
-
-        // Control button functions...
-        function togglePlayPause() {
-            if (videoPlayer.paused || videoPlayer.ended) {
-                videoPlayer.play();
-                playPauseBtn.innerHTML = "&#10074;&#10074;";
-            } else {
-                videoPlayer.pause();
-                playPauseBtn.innerHTML = "&#9658;";
-            }
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                videoContainer.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        function showControls() {
-            overlay.style.opacity = 1;
-            hideControlsAfterDelay();
-        }
-
-        function hideControlsAfterDelay() {
-            clearTimeout(controlsTimeout);
-            controlsTimeout = setTimeout(function () {
-                overlay.style.opacity = 0;
-            }, 10000); // 10 seconds
-        }
 
         playPauseBtn.addEventListener("click", togglePlayPause);
         fullScreenBtn.addEventListener("click", toggleFullscreen);
@@ -280,4 +238,3 @@ reloadBtn.addEventListener("click", function() {
     </script>
 </body>
 </html>
-
