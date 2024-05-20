@@ -2,7 +2,7 @@ name: Update Playlist
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Runs at 6:00 AM UTC which is 12:00 PM India Standard Time
+    - cron: '30 18 * * *'  # Runs at 12:00 AM IST (30 minutes past 6:00 PM UTC)
 
 jobs:
   update-playlist:
@@ -12,25 +12,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Shuffle playlist
+    - name: Determine Playlist for the Day
+      id: get-day
+      run: echo "::set-output name=day::$(date +%u)"
+
+    - name: Copy Playlist for the Day
       run: |
-        python3 -c "
-import json
-import random
-
-with open('playlist.json', 'r') as file:
-    playlist = json.load(file)
-
-random.shuffle(playlist)
-
-with open('playlist.json', 'w') as file:
-    json.dump(playlist, file, indent=4)
-        "
+        case ${{ steps.get-day.outputs.day }} in
+          1) cp playlists/playlist1.json playlist.json ;;
+          2) cp playlists/playlist2.json playlist.json ;;
+          3) cp playlists/playlist3.json playlist.json ;;
+          4) cp playlists/playlist4.json playlist.json ;;
+          5) cp playlists/playlist5.json playlist.json ;;
+          6) cp playlists/playlist6.json playlist.json ;;
+          7) cp playlists/playlist1.json playlist.json ;;  # Reusing playlist1.json for Sunday
+        esac
 
     - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add playlist.json
-        git commit -m 'Shuffle playlist'
+        git commit -m "Update playlist for day ${{ steps.get-day.outputs.day }}"
         git push
