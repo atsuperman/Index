@@ -95,37 +95,37 @@
         <video id="videoPlayer" autoplay controlslist="nodownload">Your browser does not support the video tag.</video>
         <div class="overlay" id="overlay">
             <div class="controls">
-                <button id="playPauseBtn" aria-label="Play/Pause">&#9658;</button>
-                <button id="fullScreenBtn" aria-label="Full Screen">
+                <button id="playPauseBtn">&#9658;</button>
+                <button id="fullScreenBtn">
                     <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/zoom-fit-svgrepo-com.svg?v=1714291385987" alt="Full Screen" width="30" height="30">
                 </button>
-                <button id="reloadBtn" aria-label="Reload">
+                <button id="reloadBtn">
                     <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/ReloadW.svg?v=1714271107351" alt="Reload" width="30" height="30">
                 </button>
-                <button aria-label="Facebook" onclick="openFacebook()">
+                <button onclick="openFacebook()">
                     <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/fb.svg?v=1714293315523" alt="Facebook" width="30" height="30">
                 </button>
             </div>
-            <button class="radio-button" aria-label="Radio" onclick="smoothOpenWebsite()">
+            <button class="radio-button" onclick="smoothOpenWebsite()">
                 <img src="https://cdn.glitch.global/788b2b36-4fc3-402d-889c-1f89e619ff8b/radio.svg?v=1714275703818" alt="Radio" width="30" height="30">
             </button>
         </div>
-        <div class="center-message"></div>
+<div class="center-message"></div>
     </div>
 
     <script>
-        const videoPlayer = document.getElementById("videoPlayer");
-        const playPauseBtn = document.getElementById("playPauseBtn");
-        const fullScreenBtn = document.getElementById("fullScreenBtn");
-        const reloadBtn = document.getElementById("reloadBtn");
-        const videoContainer = document.getElementById("videoContainer");
-        const overlay = document.getElementById("overlay");
-        const centerMessage = document.querySelector(".center-message");
-        let reloadClickCount = 0;
-        const playlistUrl = "playlist.json";
-        let videoUrls = [];
-        let currentVideoIndex = 0;
-        let controlsTimeout;
+        var videoPlayer = document.getElementById("videoPlayer");
+        var playPauseBtn = document.getElementById("playPauseBtn");
+        var fullScreenBtn = document.getElementById("fullScreenBtn");
+        var reloadBtn = document.getElementById("reloadBtn");
+        var videoContainer = document.getElementById("videoContainer");
+        var overlay = document.getElementById("overlay");
+        var centerMessage = document.querySelector(".center-message");
+        var reloadClickCount = 0;
+        var playlistUrl = "playlist.json";
+        var videoUrls = [];
+        var currentVideoIndex = 0;
+        var controlsTimeout;
 
         // Load playlist
         fetch(playlistUrl)
@@ -137,55 +137,11 @@
             })
             .catch(error => console.error('Error loading playlist:', error));
 
-        // Create schedule for each day of the week
-        function createSchedule(dayOfWeek) {
-            const totalVideos = videoUrls.length;
-            const slotsPerDay = 288; // 24 hours * 60 minutes / 5 minutes per slot
-            let schedule = [];
-
-            // Generate schedule based on the day of the week
-            for (let i = 0; i < slotsPerDay; i++) {
-                schedule.push((i + dayOfWeek) % totalVideos);
-            }
-
-            // Apply custom order based on the day of the week
-            switch (dayOfWeek) {
-                case 0: // Sunday
-                    schedule.reverse();
-                    break;
-                case 1: // Monday
-                    schedule.sort();
-                    break;
-                case 2: // Tuesday
-                    schedule = customOrder(schedule, [totalVideos / 2, 'reverse']);
-                    break;
-                case 3: // Wednesday
-                    schedule = customOrder(schedule, [1, 3, 5, 'sort'], [2, 4, 6, 'reverse']);
-                    break;
-                case 4: // Thursday
-                    schedule = customOrder(schedule, [(i - 1 + 3) % totalVideos]);
-                    break;
-                case 5: // Friday
-                    schedule = customOrder(schedule, [totalVideos / 4, 'sort'], [totalVideos / 2, 'reverse']);
-                    break;
-                case 6: // Saturday
-                    schedule = customOrder(schedule, [1, 3, 5, 'sort'], [2, 4, 6, 'reverse']);
-                    break;
-            }
-
-            return schedule;
-        }
-
-        function customOrder(schedule, ...args) {
-            // Custom order logic here
-            return schedule;
-        }
-
         function setInitialVideo() {
-            const now = new Date();
-            const indianTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-            const minutesSinceMidnight = indianTime.getHours() * 60 + indianTime.getMinutes();
-            const currentSlotIndex = Math.floor(minutesSinceMidnight / (24 * 60 / 288));
+            var now = new Date();
+            var indianTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+            var minutesSinceMidnight = indianTime.getHours() * 60 + indianTime.getMinutes();
+            var currentSlotIndex = Math.floor(minutesSinceMidnight / (24 * 60 / 288));
             currentVideoIndex = currentSlotIndex % videoUrls.length;
         }
 
@@ -194,12 +150,11 @@
             videoPlayer.play().catch(error => console.error('Error playing video:', error));
         }
 
-        videoPlayer.addEventListener("ended", () => {
+        videoPlayer.addEventListener("ended", function () {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             playScheduledVideo();
         });
-
-        playPauseBtn.addEventListener("click", togglePlayPause);
+       playPauseBtn.addEventListener("click", togglePlayPause);
         fullScreenBtn.addEventListener("click", toggleFullscreen);
         reloadBtn.addEventListener("click", handleReload);
         videoContainer.addEventListener("mousemove", showControls);
@@ -212,7 +167,7 @@
                 playPauseBtn.innerHTML = "&#10074;&#10074;";
             } else {
                 videoPlayer.pause();
-playPauseBtn.innerHTML = "&#9658;";
+                playPauseBtn.innerHTML = "&#9658;";
             }
         }
 
@@ -227,9 +182,9 @@ playPauseBtn.innerHTML = "&#9658;";
         function handleReload() {
             reloadClickCount++;
             if (reloadClickCount === 1) {
-                centerMessage.innerText = "If you refresh this site, you can catch the last five minutes of live content again.";
+                centerMessage.innerText = "If You Refresh this site you catch last five minutes live content again to watch";
             } else if (reloadClickCount === 2) {
-                centerMessage.innerText = "Adjust your device's lock screen orientation settings to enjoy full-screen view!";
+                centerMessage.innerText = "Adjust your Mobile / Device Lock Screen / Lock Orientations / Rotate Screen / options Enable / Disable you can enjoy the TV in Full screen View!";
                 reloadClickCount = 0;
             }
             centerMessage.style.display = "block";
@@ -246,6 +201,8 @@ playPauseBtn.innerHTML = "&#9658;";
             }, 10000);
         }
 
+        hideControlsAfterDelay();
+
         function hideControlsAfterDelay() {
             controlsTimeout = setTimeout(() => {
                 overlay.style.opacity = 0;
@@ -259,8 +216,8 @@ playPauseBtn.innerHTML = "&#9658;";
         function smoothOpenWebsite() {
             window.open("https://past-rainbow-mule.glitch.me/", "_blank");
         }
-
-        hideControlsAfterDelay();
     </script>
 </body>
 </html>
+
+    
