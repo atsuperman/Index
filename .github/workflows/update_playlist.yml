@@ -31,7 +31,7 @@ jobs:
 
     - name: Shuffle playlist
       run: |
-        python3 -c "
+        python3 -c '
 import json
 import random
 import os
@@ -79,18 +79,18 @@ def faro_shuffle(playlist):
     return [val for pair in zip(playlist[:half], playlist[half:]) for val in pair]
 
 # Get the selected shuffle method from the environment variable
-shuffle_method = os.getenv('shuffle_method')
+shuffle_method = os.getenv("shuffle_method")
 
-with open('playlist.json', 'r') as file:
+with open("playlist.json", "r") as file:
     playlist = json.load(file)
 
 # Call the selected shuffle method
 shuffled_playlist = globals()[shuffle_method](playlist)
 
-with open('playlist.json', 'w') as file:
+with open("playlist.json", "w") as file:
     json.dump(shuffled_playlist, file, indent=4)
-        "
-      
+        '
+
     - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
